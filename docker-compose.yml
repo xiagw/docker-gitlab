@@ -1,0 +1,53 @@
+version: "3"
+
+services:
+  nexus:
+    image: sonatype/nexus3
+    restart: always
+    hostname: ${DOMAIN_NAME_NEXUS}
+    container_name: nexus
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./nexus-data:/nexus-data
+
+  ### Gitlab ################################################
+  gitlab:
+    image: "gitlab/gitlab-ce:latest"
+    restart: always
+    hostname: "${DOMAIN_NAME}"
+    container_name: gitlab
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url "https://${DOMAIN_NAME}"
+        nginx['listen_https'] = true
+        nginx['redirect_http_to_https'] = true
+        sidekiq['concurrency'] = 64
+        letsencrypt['enable'] = false
+        letsencrypt['auto_renew'] = false
+        nginx['ssl_certificate'] = "/etc/gitlab/${DOMAIN_NAME}.cert"
+        nginx['ssl_certificate_key'] = "/etc/gitlab/${DOMAIN_NAME}.key"
+        nginx['custom_nginx_config'] = "include /etc/gitlab/nexus.conf;"
+        gitlab_rails['lfs_enabled'] = true
+        gitlab_rails['initial_root_password'] = 'laradock22ER'
+        # nginx['custom_gitlab_server_config'] = "set_real_ip_from 172.0.0.0/8;\nreal_ip_header X-Real-IP;\nreal_ip_recursive on;"
+        # gitlab_rails['trusted_proxies'] = ['caddy','nginx','apache2']
+        # gitlab_rails['gitlab_shell_ssh_port'] = 22
+        # redis['enable'] = false
+        # gitlab_rails['redis_host'] = 'redis'
+        # gitlab_rails['redis_database'] = 8
+        # postgresql['enable'] = false
+        # gitlab_rails['db_host'] = 'postgres'
+        # gitlab_rails['db_username'] = 'laradock_gitlab'
+        # gitlab_rails['db_password'] = 'laradock_gitlab'
+        # gitlab_rails['db_database'] = 'laradock_gitlab'
+    volumes:
+      - "./gitlab/config:/etc/gitlab"
+      - "./gitlab/data:/var/opt/gitlab"
+      - "./gitlab/log:/var/log/gitlab"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "22:22"
+    # depends_on:
+    #   - postgres
