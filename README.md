@@ -1,15 +1,15 @@
-# OS: openssh-server
+# Change OS: openssh-server
 ```
 sed -i -e '/^#Port\ 22/s//Port 2222/' /etc/ssh/sshd_config
 systemctl restart sshd
 ```
 
-# docker: gitlab-server
+# Docker: gitlab-server
 ```shell
 cp env-example .env
 ```
 
-**修改.env内容:  
+**修改.env内容:**  
 1, 设定为你的域名，  
 `DOMAIN_NAME=git.example.com`
 `DOMAIN_NAME_NEXUS=nexus.example.com`
@@ -21,7 +21,7 @@ sudo cp /path_src/git.example.com.cert gitlab/config/
 sudo cp /path_src/git.example.com.key gitlab/config/
 ```
 
-# startup
+# Startup:
 ```shell
 docker-compose up -d gitlab
 ```
