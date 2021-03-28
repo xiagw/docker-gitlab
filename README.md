@@ -9,15 +9,17 @@ systemctl restart sshd
 cp env-example .env
 ```
 
-修改.env内容:
-1, 设定为你的域名，
-DOMAIN_NAME=git.example.com
-DOMAIN_NAME_NEXUS=nexus.example.com
+**修改.env内容:  
+1, 设定为你的域名，  
+`DOMAIN_NAME=git.example.com`
+`DOMAIN_NAME_NEXUS=nexus.example.com`
 
 2, 以及copy证书文件 key and cert to gitlab config 
+```
 sudo mkdir -p gitlab/config
 sudo cp /path_src/git.example.com.cert gitlab/config/
 sudo cp /path_src/git.example.com.key gitlab/config/
+```
 
 # startup
 ```shell
