@@ -16,7 +16,7 @@ source .env
 mkdir -p gitlab/config
 
 openssl genrsa -out "gitlab/config/${DOMAIN_NAME:?empty var}.key" 2048
-openssl req -new -key "gitlab/config/${DOMAIN_NAME}.key" -out "gitlab/config/${DOMAIN_NAME}.csr" -subj "/CN=default/O=default/C=UK"
+openssl req -new -key "gitlab/config/${DOMAIN_NAME}.key" -out "gitlab/config/${DOMAIN_NAME}.csr" -subj "/CN=${DOMAIN_NAME}/O=${DOMAIN_NAME}/C=HK"
 openssl x509 -req -days 3650 -in "gitlab/config/${DOMAIN_NAME}.csr" -signkey "gitlab/config/${DOMAIN_NAME}.key" -out "gitlab/config/${DOMAIN_NAME}.crt"
 chmod 644 "gitlab/config/${DOMAIN_NAME}.key"
 
