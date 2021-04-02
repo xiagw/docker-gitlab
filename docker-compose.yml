@@ -25,7 +25,7 @@ services:
         sidekiq['concurrency'] = 64
         letsencrypt['enable'] = false
         letsencrypt['auto_renew'] = false
-        nginx['ssl_certificate'] = "/etc/gitlab/${DOMAIN_NAME}.cert"
+        nginx['ssl_certificate'] = "/etc/gitlab/${DOMAIN_NAME}.crt"
         nginx['ssl_certificate_key'] = "/etc/gitlab/${DOMAIN_NAME}.key"
         # nginx['custom_nginx_config'] = "include /etc/gitlab/nexus.conf;"
         gitlab_rails['lfs_enabled'] = true
