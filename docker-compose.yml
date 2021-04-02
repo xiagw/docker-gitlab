@@ -1,6 +1,8 @@
 version: "3"
 
 services:
+
+  ### nexus ################################################
   nexus:
     image: sonatype/nexus3
     # restart: always
@@ -49,3 +51,20 @@ services:
       - "${GITLAB_HTTP_PORT}:80"
       - "${GITLAB_HTTPS_PORT}:443"
       - "${GITLAB_SSH_PORT}:22"
+
+  ### awvs ################################################
+  awvs:
+    image: secfa/docker-awvs
+    ports:
+      - "3443:3443"
+    # networks:
+    #   - backend
+    # restart: always
+
+  ### watchtower ################################################
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    #- /home/ubuntu/.docker/config.json:/config.json
+    #command: --interval 300
