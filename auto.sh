@@ -13,6 +13,7 @@ fi
 
 source .env
 
+## 生成自签名证书，（不建议）
 dir_ssl='gitlab/config/ssl'
 if [ ! -d "${dir_ssl}" ]; then
     mkdir -p "${dir_ssl}"
