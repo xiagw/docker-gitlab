@@ -13,12 +13,14 @@ fi
 
 source .env
 
-mkdir -p gitlab/config
-
-openssl genrsa -out "gitlab/config/${DOMAIN_NAME:?empty var}.key" 2048
-openssl req -new -key "gitlab/config/${DOMAIN_NAME}.key" -out "gitlab/config/${DOMAIN_NAME}.csr" -subj "/CN=${DOMAIN_NAME}/O=${DOMAIN_NAME}/C=HK"
-openssl x509 -req -days 3650 -in "gitlab/config/${DOMAIN_NAME}.csr" -signkey "gitlab/config/${DOMAIN_NAME}.key" -out "gitlab/config/${DOMAIN_NAME}.crt"
-chmod 644 "gitlab/config/${DOMAIN_NAME}.key"
+dir_ssl='gitlab/config/ssl'
+if [ ! -d "${dir_ssl}" ]; then
+    mkdir -p "${dir_ssl}"
+    openssl genrsa -out "${dir_ssl}/${DOMAIN_NAME:?empty var}.key" 2048
+    openssl req -new -key "${dir_ssl}/${DOMAIN_NAME}.key" -out "${dir_ssl}/${DOMAIN_NAME}.csr" -subj "/CN=${DOMAIN_NAME}/O=${DOMAIN_NAME}/C=HK"
+    openssl x509 -req -days 3650 -in "${dir_ssl}/${DOMAIN_NAME}.csr" -signkey "${dir_ssl}/${DOMAIN_NAME}.key" -out "${dir_ssl}/${DOMAIN_NAME}.crt"
+    chmod 644 "${dir_ssl}/${DOMAIN_NAME}.key"
+fi
 
 ## 启动gitlab server
 docker-compose up -d gitlab

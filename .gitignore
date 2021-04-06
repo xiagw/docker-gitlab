@@ -1,3 +1,5 @@
 .env
 gitlab/
 nexus-data/
+
+.DS_Store
