@@ -1,4 +1,7 @@
-DOMAIN_NAME=git.example.com
+## domain name
+DOMAIN_NAME=example.com
+
+DOMAIN_NAME_GIT=git.example.com
 DOMAIN_NAME_NEXUS=nexus.example.com
 
 NEXUS_HTTP_PORT=8081

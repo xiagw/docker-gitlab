@@ -3,6 +3,22 @@ version: "3"
 services:
 
   ### nexus ################################################
+  acme.sh:
+    image: neilpang/acme.sh
+    container_name: acme
+    command: daemon
+    volumes:
+      - ./acmeout:/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DEPLOY_DOCKER_CONTAINER_LABEL=sh.acme.autoload.domain=${DOMAIN_NAME}
+      - DEPLOY_DOCKER_CONTAINER_KEY_FILE=/etc/nginx/ssl/${DOMAIN_NAME}/key.pem
+      - DEPLOY_DOCKER_CONTAINER_CERT_FILE="/etc/nginx/ssl/${DOMAIN_NAME}/cert.pem"
+      - DEPLOY_DOCKER_CONTAINER_CA_FILE="/etc/nginx/ssl/${DOMAIN_NAME}/ca.pem"
+      - DEPLOY_DOCKER_CONTAINER_FULLCHAIN_FILE="/etc/nginx/ssl/${DOMAIN_NAME}/full.pem"
+      - DEPLOY_DOCKER_CONTAINER_RELOAD_CMD="service nginx force-reload"
+
+  ### nexus ################################################
   nexus:
     image: sonatype/nexus3
     # restart: always
@@ -17,11 +33,11 @@ services:
   gitlab:
     image: "gitlab/gitlab-ce:latest"
     restart: always
-    hostname: "${DOMAIN_NAME}"
+    hostname: "${DOMAIN_NAME_GIT}"
     container_name: gitlab
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url "https://${DOMAIN_NAME}"
+        external_url "https://${DOMAIN_NAME_GIT}"
         nginx['listen_https'] = true
         nginx['redirect_http_to_https'] = true
         sidekiq['concurrency'] = 64
@@ -29,8 +45,8 @@ services:
         letsencrypt['auto_renew'] = "${GITLAB_LETSENCRYPT_RENEW}"
         gitlab_rails['lfs_enabled'] = true
         gitlab_rails['initial_root_password'] = "${GITLAB_ROOT_PASSWORD}"
-        # nginx['ssl_certificate'] = "/etc/gitlab/${DOMAIN_NAME}.crt"
-        # nginx['ssl_certificate_key'] = "/etc/gitlab/${DOMAIN_NAME}.key"
+        # nginx['ssl_certificate'] = "/etc/gitlab/${DOMAIN_NAME_GIT}.crt"
+        # nginx['ssl_certificate_key'] = "/etc/gitlab/${DOMAIN_NAME_GIT}.key"
         # nginx['custom_nginx_config'] = "include /etc/gitlab/nexus.conf;"
         # nginx['custom_gitlab_server_config'] = "set_real_ip_from 172.0.0.0/8;\nreal_ip_header X-Real-IP;\nreal_ip_recursive on;"
         # gitlab_rails['trusted_proxies'] = ['caddy','nginx','apache2']
