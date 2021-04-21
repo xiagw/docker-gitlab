@@ -4,7 +4,7 @@
 # sudo sed -i -e '/^#Port\ 22/s//Port 23/' /etc/ssh/sshd_config
 # sudo systemctl restart sshd
 
-## 生成自签名证书
+## 生成 .env 环境变量文件
 if [ ! -f .env ]; then
     cp env-example .env
     read -r -p "Enter your domain name: " domain_name

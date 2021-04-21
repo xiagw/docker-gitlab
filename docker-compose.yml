@@ -77,6 +77,19 @@ services:
     #   - backend
     # restart: always
 
+  ### Nessus ################################################
+  nessus:
+    image: tenableofficial/nessus
+    ports:
+      - "8834:8834"
+    environment:
+      # - ACTIVATION_CODE=
+      - USERNAME=username
+      - PASSWORD=password
+    # networks:
+    #   - backend
+    # restart: always
+
   ### watchtower ################################################
   watchtower:
     image: containrrr/watchtower
