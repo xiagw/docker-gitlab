@@ -7,7 +7,7 @@ systemctl restart sshd
 
 # Docker: gitlab-server
 ```shell
-cp env-example .env
+cp .env.example .env
 ```
 
 **update .env**

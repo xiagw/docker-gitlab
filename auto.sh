@@ -6,7 +6,7 @@
 
 ## 生成 .env 环境变量文件
 if [ ! -f .env ]; then
-    cp env-example .env
+    cp .env.example .env
     read -r -p "Enter your domain name: " domain_name
     sed -i -e "s/example.com/${domain_name:?empty var}/g" .env
 fi
