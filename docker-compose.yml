@@ -84,10 +84,10 @@ services:
     ports:
       - "8834:8834"
     environment:
-      # - ACTIVATION_CODE=
-      - USERNAME: 'root'
-      - PASSWORD: 'password2'
-      - SECURITYCENTER: 'yes'
+      - ACTIVATION_CODE=${NESSUS_ACTIVE_CODE}
+      - USERNAME=${NESSUS_USER}
+      - PASSWORD=${NESSUS_PASS}
+      - SECURITYCENTER=yes
     # networks:
     #   - backend
     # restart: always
