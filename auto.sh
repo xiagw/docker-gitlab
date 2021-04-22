@@ -13,6 +13,13 @@ fi
 
 source .env
 
+## acme.sh
+if [[ ! -d acmeout ]]; then
+    if [[ ! -f acmeout/id_ed25519 ]]; then
+        ssh-keygen -t ed25519 -N '' -f acmeout/id_ed25519
+    fi
+fi
+
 ## 生成自签名证书，（不建议）
 dir_ssl='gitlab/config/ssl'
 if [ ! -d "${dir_ssl}" ]; then

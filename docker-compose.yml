@@ -17,6 +17,15 @@ services:
       - DEPLOY_DOCKER_CONTAINER_CA_FILE="/etc/nginx/ssl/${DOMAIN_NAME}/ca.pem"
       - DEPLOY_DOCKER_CONTAINER_FULLCHAIN_FILE="/etc/nginx/ssl/${DOMAIN_NAME}/full.pem"
       - DEPLOY_DOCKER_CONTAINER_RELOAD_CMD="service nginx force-reload"
+      - DEPLOY_SSH_USER=ubuntu
+      - DEPLOY_SSH_CMD=ssh
+      - DEPLOY_SSH_SERVER=${DEPLOY_SSH_SERVER}
+      - DEPLOY_SSH_KEYFILE=${DEPLOY_SSH_KEYFILE}
+      - DEPLOY_SSH_CERTFILE=${DEPLOY_SSH_CERTFILE}
+      - DEPLOY_SSH_CAFILE=${DEPLOY_SSH_CAFILE}
+      - DEPLOY_SSH_FULLCHAIN=${DEPLOY_SSH_FULLCHAIN}
+      # - DEPLOY_SSH_REMOTE_CMD=command to execute on remote host
+      # - DEPLOY_SSH_BACKUP=yes or no
 
   ### nexus ################################################
   nexus:
