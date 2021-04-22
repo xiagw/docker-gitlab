@@ -80,12 +80,14 @@ services:
   ### Nessus ################################################
   nessus:
     image: tenableofficial/nessus
+    container_name: nessus
     ports:
       - "8834:8834"
     environment:
       # - ACTIVATION_CODE=
-      - USERNAME=username
-      - PASSWORD=password
+      - USERNAME: 'root'
+      - PASSWORD: 'password2'
+      - SECURITYCENTER: 'yes'
     # networks:
     #   - backend
     # restart: always
