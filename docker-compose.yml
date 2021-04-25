@@ -12,10 +12,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - DEPLOY_DOCKER_CONTAINER_LABEL=sh.acme.autoload.domain=${DOMAIN_NAME}
-      - DEPLOY_DOCKER_CONTAINER_KEY_FILE=/etc/nginx/ssl/${DOMAIN_NAME}/key.pem
-      - DEPLOY_DOCKER_CONTAINER_CERT_FILE="/etc/nginx/ssl/${DOMAIN_NAME}/cert.pem"
-      - DEPLOY_DOCKER_CONTAINER_CA_FILE="/etc/nginx/ssl/${DOMAIN_NAME}/ca.pem"
-      - DEPLOY_DOCKER_CONTAINER_FULLCHAIN_FILE="/etc/nginx/ssl/${DOMAIN_NAME}/full.pem"
+      - DEPLOY_DOCKER_CONTAINER_KEY_FILE=/etc/nginx/ssl/${DOMAIN_NAME}/key.key
+      - DEPLOY_DOCKER_CONTAINER_CERT_FILE="/etc/nginx/ssl/${DOMAIN_NAME}/cert.crt"
+      - DEPLOY_DOCKER_CONTAINER_CA_FILE="/etc/nginx/ssl/${DOMAIN_NAME}/ca.crt"
+      - DEPLOY_DOCKER_CONTAINER_FULLCHAIN_FILE="/etc/nginx/ssl/${DOMAIN_NAME}/fullchain.crt"
       - DEPLOY_DOCKER_CONTAINER_RELOAD_CMD="service nginx force-reload"
       - DEPLOY_SSH_USER=ubuntu
       - DEPLOY_SSH_CMD=ssh
