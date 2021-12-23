@@ -39,7 +39,8 @@ docker-compose up -d gitlab
 ```
 
 # acme.sh
-
+```
 docker-compose exec acme.sh --issue --dns -d abc.com -d '*.abc.com' --yes-I-know-dns-manual-mode-enough-go-ahead-please
-
+## change dns
 docker-compose exec acme.sh --renew --dns -d abc.com --yes-I-know-dns-manual-mode-enough-go-ahead-please
+```
