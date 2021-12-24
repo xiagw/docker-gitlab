@@ -46,9 +46,9 @@ services:
     container_name: gitlab
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url "https://${DOMAIN_NAME_GIT}"
-        nginx['listen_https'] = true
-        nginx['redirect_http_to_https'] = true
+        external_url "${DOMAIN_NAME_GIT_EXT}"
+        # nginx['listen_https'] = true
+        # nginx['redirect_http_to_https'] = true
         sidekiq['concurrency'] = 64
         letsencrypt['enable'] = "${GITLAB_LETSENCRYPT}"
         letsencrypt['auto_renew'] = "${GITLAB_LETSENCRYPT_RENEW}"
