@@ -14,8 +14,10 @@ cp .env.example .env
 
 1, setup yours
 
-`DOMAIN_NAME=git.example.com`
-`DOMAIN_NAME_NEXUS=nexus.example.com`
+```
+DOMAIN_NAME=git.example.com
+DOMAIN_NAME_NEXUS=nexus.example.com
+```
 
 2, copy key and cert to gitlab config
 
