@@ -3,7 +3,7 @@
 ## 修改sshd_config
 read -rp "Do you want to modify sshd_config? [y/N] " -e -i 'N' yn
 if [[ ${yn:-N} == [yY] ]]; then
-    echo "Modify /etc/ssh/sshd_config"
+    echo "change port 22 ==> port 23 /etc/ssh/sshd_config"
     sed -i 's/^#Port 22/Port 23/' /etc/ssh/sshd_config
     echo "Please update your iptables rules, allow TCP port 23"
     echo 'Then: sudo systemctl restart sshd'
@@ -13,7 +13,7 @@ fi
 ## 生成 .env 环境变量文件
 read -rp "Enter your domain name: " domain
 if [ ! -f .env ]; then
-    cp .env.example .env
+    cp -v .env.example .env
     sed -i -e "s/example.com/${domain:?empty var}/g" .env
 fi
 
