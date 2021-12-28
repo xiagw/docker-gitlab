@@ -19,6 +19,7 @@ if [[ ${yn:-N} == [yY] ]]; then
     fi
 fi
 
+source .env
 read -rp "GitLab Web use http or https ? [http/https] " -e -i 'http' protocol
 if [ "${protocol:-http}" == 'http' ]; then
     # sed -i -e "/DOMAIN_NAME_GIT_EXT/s/git.example.com/$docker_host_ip/" .env
@@ -27,7 +28,6 @@ else
     read -rp "Enter your domain name: " domain
     sed -i -e "s/example.com/${domain:?empty var}/g" .env
     sed -i -e "/nginx.*_https/s/false/true/" docker-compose.yml
-    source .env
     dir_ssl='gitlab/config/ssl'
     [ -d "${dir_ssl}" ] || mkdir -p "${dir_ssl}"
     if [[ -f "${DOMAIN_NAME_GIT}.key" && -f "${DOMAIN_NAME_GIT}.crt" ]]; then
@@ -87,8 +87,8 @@ if [[ ${yn:-N} == [yY] ]]; then
     git clone https://github.com/xiagw/deploy.sh.git ~/runner
     read -rp "Enter your gitlab-runner token: " reg_token
     # reg_token='xxxxxxxx'
-    # sudo gitlab-runner register --url http://git.abc.com/ --registration-token "${reg_token:?empty var}" --executor docker --docker-image gitlab/gitlab-runner:latest --docker-volumes /var/run/docker.sock:/var/run/docker.sock --docker-privileged
-    sudo gitlab-runner register --url http://git.abc.com/ --registration-token "${reg_token:?empty var}" --executor shell --tag-list docker,linux --run-untagged --locked --access-level=not_protected
+    # sudo gitlab-runner register --url "$DOMAIN_NAME_GIT_EXT" --registration-token "${reg_token:?empty var}" --executor docker --docker-image gitlab/gitlab-runner:latest --docker-volumes /var/run/docker.sock:/var/run/docker.sock --docker-privileged
+    sudo /usr/local/bin/gitlab-runner register --url "$DOMAIN_NAME_GIT_EXT" --registration-token "${reg_token:?empty var}" --executor shell --tag-list docker,linux --run-untagged --locked --access-level=not_protected
 
     ## create git project
     # gitlab projcet create --name "pms"
