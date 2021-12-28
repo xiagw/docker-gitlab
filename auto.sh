@@ -3,7 +3,7 @@
 docker_host_ip=$(/sbin/ip -4 addr | sed -ne 's|^.* inet \([^/]*\)/.* scope global.*$|\1|p' | head -1)
 
 ## 生成 .env 环境变量文件
-[ ! -f .env ] && cp -vf .env.example .env
+[ ! -f .env ] && cp -vf env.example .env
 
 ## 修改sshd_config
 read -rp "Do you want to modify sshd_config? [y/N] " -e -i 'N' yn
@@ -21,7 +21,8 @@ fi
 
 read -rp "GitLab Web use http or https ? [http/https] " -e -i 'http' protocol
 if [ "${protocol:-http}" == 'http' ]; then
-    sed -i -e "/DOMAIN_NAME_GIT_EXT/s/git.example.com/$docker_host_ip/" .env
+    # sed -i -e "/DOMAIN_NAME_GIT_EXT/s/git.example.com/$docker_host_ip/" .env
+    :
 else
     read -rp "Enter your domain name: " domain
     sed -i -e "s/example.com/${domain:?empty var}/g" .env
