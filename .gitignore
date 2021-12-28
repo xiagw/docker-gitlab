@@ -4,3 +4,6 @@ nexus-data/
 acmeout/
 
 .DS_Store
+
+*.crt
+*.key
