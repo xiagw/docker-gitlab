@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-docker_host_ip=$(/sbin/ip -4 addr | sed -ne 's|^.* inet \([^/]*\)/.* scope global.*$|\1|p' | head -1)
+# docker_host_ip=$(/sbin/ip -4 addr | sed -ne 's|^.* inet \([^/]*\)/.* scope global.*$|\1|p' | head -1)
 
 ## 生成 .env 环境变量文件
 [ ! -f .env ] && cp -vf env.example .env
