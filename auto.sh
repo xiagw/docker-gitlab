@@ -26,15 +26,20 @@ if [ "${protocol:-http}" == 'http' ]; then
     :
 else
     read -rp "Enter your domain name: " domain
-    sed -i -e "s/example.com/${domain:?empty var}/g" .env
-    sed -i -e "/nginx.*_https/s/false/true/" docker-compose.yml
+    sed -i -e "s/example.com/${domain:?empty var}/g" \
+        -e "/NGINX_LISTEN_HTTPS/s/false/true/" \
+        -e "/NGINX_REDIRECT_HTTP_TO_HTTPS/s/false/true/" .env
+    # sed -i -e "/nginx.*_https/s/false/true/" docker-compose.yml
+    source .env
     dir_ssl='gitlab/config/ssl'
     [ -d "${dir_ssl}" ] || mkdir -p "${dir_ssl}"
-    if [[ -f "${DOMAIN_NAME_GIT}.key" && -f "${DOMAIN_NAME_GIT}.crt" ]]; then
-        echo "Found ${DOMAIN_NAME_GIT}.key ${DOMAIN_NAME_GIT}.crt"
-        cp -v "${DOMAIN_NAME_GIT}.key" "${DOMAIN_NAME_GIT}.crt" "${dir_ssl}/"
+    ## search key and cert
+    if [[ -f "${domain}.key" && -f "${domain}.crt" ]]; then
+        echo "Found ${domain}.key ${domain}.crt"
+        cp -v "${domain}.key" "${dir_ssl}/git.${domain}.key"
+        cp -v "${domain}.crt" "${dir_ssl}/git.${domain}.crt"
     else
-        echo "Not found ${DOMAIN_NAME_GIT}.key ${DOMAIN_NAME_GIT}.crt"
+        echo "Not found ${domain}.key ${domain}.crt"
         if grep '^GITLAB_LETSENCRYPT=false' .env && [ ! -f "${dir_ssl}/${DOMAIN_NAME_GIT}.key" ]; then
             ## 生成自签名证书
             read -rp "Do you want to generate self-signed certificate? [y/N] " -e -i 'N' yn
