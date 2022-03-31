@@ -20,26 +20,27 @@ if [[ ${yn:-N} == [yY] ]]; then
 fi
 
 source .env
-read -rp "GitLab Web use http or https ? [http/https] " -e -i 'http' protocol
+read -rp "GitLab Web use http or https ? [http]/https " -e -i 'http' protocol
 if [ "${protocol:-http}" == 'http' ]; then
     # sed -i -e "/DOMAIN_NAME_GIT_EXT/s/git.example.com/$docker_host_ip/" .env
     :
 else
-    read -rp "Enter your domain name: " domain
-    sed -i -e "s/example.com/${domain:?empty var}/g" \
+    read -rp "Enter your domain name: " your_domain
+    sed -i -e "s/example.com/${your_domain:?empty var}/g" \
         -e "/NGINX_LISTEN_HTTPS/s/false/true/" \
-        -e "/NGINX_REDIRECT_HTTP_TO_HTTPS/s/false/true/" .env
+        -e "/NGINX_REDIRECT_HTTP_TO_HTTPS/s/false/true/" \
+        -e "/DOMAIN_NAME_GIT_EXT/s/http/https/" .env
     # sed -i -e "/nginx.*_https/s/false/true/" docker-compose.yml
     source .env
     dir_ssl='gitlab/config/ssl'
     [ -d "${dir_ssl}" ] || mkdir -p "${dir_ssl}"
-    ## search key and cert
-    if [[ -f "${domain}.key" && -f "${domain}.crt" ]]; then
-        echo "Found ${domain}.key ${domain}.crt"
-        cp -v "${domain}.key" "${dir_ssl}/git.${domain}.key"
-        cp -v "${domain}.crt" "${dir_ssl}/git.${domain}.crt"
+    ## search key and cert for $your_domain in current dir
+    if [[ -f "${your_domain}.key" && -f "${your_domain}.crt" ]]; then
+        echo "Found ${your_domain}.key ${your_domain}.crt"
+        cp -v "${your_domain}.key" "${dir_ssl}/git.${your_domain}.key"
+        cp -v "${your_domain}.crt" "${dir_ssl}/git.${your_domain}.crt"
     else
-        echo "Not found ${domain}.key ${domain}.crt"
+        echo "Not found ${your_domain}.key ${your_domain}.crt"
         if grep '^GITLAB_LETSENCRYPT=false' .env && [ ! -f "${dir_ssl}/${DOMAIN_NAME_GIT}.key" ]; then
             ## 生成自签名证书
             read -rp "Do you want to generate self-signed certificate? [y/N] " -e -i 'N' yn
@@ -74,6 +75,7 @@ fi
 # docker-compose exec -T gitlab-runner gitlab-runner run --user root --working-directory /home/git --env GITLAB_CI_RUNNER_DESCRIPTION="Gitlab Runner" --env GITLAB_CI_RUNNER_TAGS="docker,linux" --env GITLAB_CI_RUNNER_ACCESS_TOKEN="${GITLAB_RUNNER_TOKEN}" --env GITLAB_CI_RUNNER_EXECUTOR="docker" --env GITLAB_CI_RUNNER_DOCKER_IMAGE="gitlab/gitlab-runner:latest" --env GITLAB_CI_RUNNER_DOCKER_VOLUMES="/var/run/docker.sock:/var/run/docker.sock" --env GITLAB_CI_RUNNER_DOCKER_PRIVILEGED="true" --env GITLAB_CI_RUNNER_DOCKER_NETWORK="gitlab_gitlab-runner" gitlab/gitlab-runner
 
 read -rp "Do you want to install and setup gitlab-runner? [y/N] " -e -i 'N' yn
+source .env
 if [[ ${yn:-N} == [yY] ]]; then
     # Download the binary for your system
     sudo curl -L --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
