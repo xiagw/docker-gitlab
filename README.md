@@ -1,48 +1,45 @@
-# Change OS: openssh-server
-If you want to use port 22 for git
-```
+# Description: docker gitlab server
+
+# Config:
+(option) If you want to use port 22 for gitlab
+```shell
+## change port to 2222
 sed -i -e '/^#Port\ 22/s//Port 2222/' /etc/ssh/sshd_config
 systemctl restart sshd
 ```
 
-# Docker: gitlab-server
 ```shell
 cp env.example .env
+vim .env
+## Change config to yours.
 ```
 
-**update .env**
+If you want to configure https
 
-1, setup yours
-
+Option 1: gitlab letsencrypt，(If you could control DNS, or your <server> have public IP, can be accessed directly from the Internet)
+```shell
+GITLAB_LETSENCRYPT=true
+GITLAB_LETSENCRYPT_RENEW=true
 ```
-DOMAIN_NAME=git.example.com
-DOMAIN_NAME_NEXUS=nexus.example.com
-```
-
-2, copy key and cert to gitlab config
-
-Option 1：（default）
-use gitlab letsencrypt，
-(If you could control DNS, or you have public IP, can be accessed directly from the external network)
-
-Option 2：
-Use existing certificates
-(Copy the cert and key to config folder)
-
-```
-sudo mkdir -p gitlab/config/ssl
-sudo cp /path_source/git.example.com.cert gitlab/config/ssl/
-sudo cp /path_source/git.example.com.key gitlab/config/ssl/
+Option 2: existing certificates (Copy the cert and key to config folder)
+```shell
+mkdir -p gitlab/config/ssl
+## fixed file name 
+cp /path_source/git.example.com.crt gitlab/config/ssl/
+cp /path_source/git.example.com.key gitlab/config/ssl/
 ```
 
 # Startup:
+(default) http
 ```shell
 docker-compose up -d gitlab
 ```
 
+
+
 # acme.sh
 ```
-docker-compose exec acme.sh --issue --dns -d abc.com -d '*.abc.com' --yes-I-know-dns-manual-mode-enough-go-ahead-please
+docker-compose exec acme.sh --issue --dns -d example.com -d '*.example.com' --yes-I-know-dns-manual-mode-enough-go-ahead-please
 ## change dns
-docker-compose exec acme.sh --renew --dns -d abc.com --yes-I-know-dns-manual-mode-enough-go-ahead-please
+docker-compose exec acme.sh --renew --dns -d example.com --yes-I-know-dns-manual-mode-enough-go-ahead-please
 ```

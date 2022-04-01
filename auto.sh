@@ -25,7 +25,9 @@ if [ "${protocol:-http}" == 'http' ]; then
     # sed -i -e "/DOMAIN_NAME_GIT_EXT/s/git.example.com/$docker_host_ip/" .env
     :
 else
-    read -rp "Enter your domain name: " your_domain
+    crt_guess="$(ls *.crt | head -n 1)"
+    domain_guess=${crt_guess%.crt}
+    read -rp "Enter your domain name: " -e -i "$domain_guess" your_domain
     sed -i -e "s/example.com/${your_domain:?empty var}/g" \
         -e "/NGINX_LISTEN_HTTPS/s/false/true/" \
         -e "/NGINX_REDIRECT_HTTP_TO_HTTPS/s/false/true/" \
