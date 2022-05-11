@@ -3,12 +3,12 @@
 # docker_host_ip=$(/sbin/ip -4 addr | sed -ne 's|^.* inet \([^/]*\)/.* scope global.*$|\1|p' | head -1)
 
 ## 生成 .env 环境变量文件
-[ ! -f .env ] && cp -vf env.example .env
+[ -f .env ] || cp -vf example.env .env
 
 ## 修改sshd_config
 read -rp "Do you want to modify sshd_config? [y/N] " -e -i 'N' yn
 if [[ ${yn:-N} == [yY] ]]; then
-    echo "change port 22 ==> port 23 /etc/ssh/sshd_config"
+    echo "/etc/ssh/sshd_config: port 22 ==> port 23"
     sudo sed -i 's/^#Port 22/Port 23/' /etc/ssh/sshd_config
     sed -i -e '/GITLAB_SSH_PORT/s/=.*/=22/' .env
     echo "Please update your iptables rules, allow TCP port 23"
@@ -25,9 +25,9 @@ if [ "${protocol:-http}" == 'http' ]; then
     # sed -i -e "/DOMAIN_NAME_GIT_EXT/s/git.example.com/$docker_host_ip/" .env
     :
 else
-    crt_guess="$(ls *.crt | head -n 1)"
-    domain_guess=${crt_guess%.crt}
-    read -rp "Enter your domain name: " -e -i "$domain_guess" your_domain
+    find_crt=(*.crt)
+    find_domain=${find_crt%%.crt*}
+    read -rp "Enter your domain name: " -e -i "$find_domain" your_domain
     sed -i -e "s/example.com/${your_domain:?empty var}/g" \
         -e "/NGINX_LISTEN_HTTPS/s/false/true/" \
         -e "/NGINX_REDIRECT_HTTP_TO_HTTPS/s/false/true/" \
@@ -93,7 +93,7 @@ if [[ ${yn:-N} == [yY] ]]; then
     sudo /usr/local/bin/gitlab-runner install --user="$USER" --working-directory="$HOME"/runner
     sudo /usr/local/bin/gitlab-runner start
 
-    git clone https://github.com/xiagw/deploy.sh.git ~/runner
+    git clone https://github.com/xiagw/deploy.sh.git "$HOME"/runner
     read -rp "Enter your gitlab-runner token: " reg_token
     # reg_token='xxxxxxxx'
     # sudo /usr/local/bin/gitlab-runner register --url "$DOMAIN_NAME_GIT_EXT" --registration-token "${reg_token:?empty var}" --executor docker --docker-image gitlab/gitlab-runner:latest --docker-volumes /var/run/docker.sock:/var/run/docker.sock --docker-privileged
